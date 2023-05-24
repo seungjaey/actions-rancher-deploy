@@ -5,6 +5,7 @@
   "description": "TypeScript template action",
   "main": "lib/main.js",
   "scripts": {
+    "local-test": "npm run build && node ./lib/main.js",
     "build": "tsc",
     "format": "prettier --write '**/*.ts'",
     "format-check": "prettier --check '**/*.ts'",
@@ -27,7 +28,8 @@
   "dependencies": {
     "@actions/core": "^1.10.0",
     "@fxts/core": "0.15.1",
-    "axios": "1.4.0"
+    "axios": "1.4.0",
+    "eslint-config-prettier": "^8.8.0"
   },
   "devDependencies": {
     "@kurly/prettier-config": "0.0.0",
