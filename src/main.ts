@@ -1,19 +1,19 @@
-import * as core from '@actions/core'
-import {wait} from './wait'
+/*
+import * as core from '@actions/core';
+import axios from 'axios';
+import { pipe, toArray } from '@fxts/core';
+*/
 
 async function run(): Promise<void> {
-  try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
-
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    core.setOutput('time', new Date().toTimeString())
-  } catch (error) {
-    if (error instanceof Error) core.setFailed(error.message)
-  }
+  /*
+  const RANCHER_URL = core.getInput('rancher_url', { required: true });
+  const RANCHER_ACCESS = core.getInput('rancher_access', { required: true });
+  const RANCHER_KEY = core.getInput('rancher_key', { required: true });
+  const PROJECT_ID = core.getInput('project_id', { required: true });
+  const STACK_NAME = core.getInput('stack_name', { required: true });
+  const SERVICE_NAME = core.getInput('service_name', { required: true });
+  const DOCKER_IMAGE = core.getInput('docker_image', { required: true });
+  */
 }
 
-run()
+run();
