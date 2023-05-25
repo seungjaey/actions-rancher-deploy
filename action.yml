@@ -1,4 +1,4 @@
-name: Temporary 1.6.x Rancher Deploy
+name: 'actions-rancher-deploy'
 
 branding:
   color: 'purple'

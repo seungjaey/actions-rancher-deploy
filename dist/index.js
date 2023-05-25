@@ -238,6 +238,7 @@ const handleUnhandledRejection = (reason) => {
 process.on('unhandledRejection', handleUnhandledRejection);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug('actions-rancher-deploy start');
         const RANCHER_URL = core.getInput('rancher_url', { required: true });
         const RANCHER_ACCESS = core.getInput('rancher_access', { required: true });
         const RANCHER_KEY = core.getInput('rancher_key', { required: true });

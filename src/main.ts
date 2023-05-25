@@ -17,6 +17,7 @@ const handleUnhandledRejection = (reason: unknown): void => {
 process.on('unhandledRejection', handleUnhandledRejection);
 
 async function run(): Promise<void> {
+  core.debug('actions-rancher-deploy start');
   const RANCHER_URL = core.getInput('rancher_url', { required: true });
   const RANCHER_ACCESS = core.getInput('rancher_access', { required: true });
   const RANCHER_KEY = core.getInput('rancher_key', { required: true });
@@ -38,6 +39,7 @@ async function run(): Promise<void> {
   if (isUndefined(firstStack)) {
     throw new Error('Stack Not found');
   }
+
   const stackId = firstStack.id;
   const services = await getServices(httpClient, {
     name: SERVICE_NAME,
@@ -46,18 +48,18 @@ async function run(): Promise<void> {
   if (!checkResource(services)) {
     throw new Error(`Cannot find ${STACK_NAME}`);
   }
+
   const firstService = head(services.data);
   if (isUndefined(firstService)) {
     throw new Error('Cannot find service');
   }
+
   const { id: serviceId, launchConfig } = firstService;
   const nextLaunchConfig = {
     ...launchConfig,
     imageUuid: `docker:${DOCKER_IMAGE}`,
   };
-
   const currentState = await getServiceState(httpClient, serviceId);
-
   if (currentState === 'upgraded') {
     await postServiceFinishUpgrade(httpClient, serviceId);
     await waitUntilServiceState(httpClient, { serviceId, targetState: 'active' });
