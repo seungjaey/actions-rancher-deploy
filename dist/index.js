@@ -7,10 +7,9 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RancherServiceStates = exports.MAX_RETRY_COUNT = exports.POLLING_INTERVAL = void 0;
+exports.MAX_RETRY_COUNT = exports.POLLING_INTERVAL = void 0;
 exports.POLLING_INTERVAL = 5000;
 exports.MAX_RETRY_COUNT = 10;
-exports.RancherServiceStates = {};
 
 
 /***/ }),
