@@ -65,11 +65,11 @@ async function run(): Promise<void> {
 
   if (currentState === 'upgraded') {
     await postServiceFinishUpgrade(httpClient, serviceId);
+    await waitUntilServiceState(httpClient, { serviceId, targetState: 'active' });
   }
-
-  await waitUntilServiceState(httpClient, { serviceId, targetState: 'active' });
   await postServiceUpgrade(httpClient, { serviceId, launchConfig: nextLaunchConfig });
   await waitUntilServiceState(httpClient, { serviceId, targetState: 'upgraded' });
+
   await postServiceFinishUpgrade(httpClient, serviceId);
   await waitUntilServiceState(httpClient, { serviceId, targetState: 'active' });
 
