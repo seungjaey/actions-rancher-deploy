@@ -29,7 +29,7 @@ inputs:
     description: Name of the docker image which is used for updating
     required: true
 
-output:
+outputs:
   result:
     description: Boolean which indicates if the action was successful or not
 
