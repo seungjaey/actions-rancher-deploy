@@ -238,7 +238,6 @@ const handleUnhandledRejection = (reason) => {
 process.on('unhandledRejection', handleUnhandledRejection);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        core.debug('init');
         const RANCHER_URL = core.getInput('rancher_url', { required: true });
         const RANCHER_ACCESS = core.getInput('rancher_access', { required: true });
         const RANCHER_KEY = core.getInput('rancher_key', { required: true });
@@ -261,7 +260,6 @@ function run() {
             throw new Error('Stack Not found');
         }
         const stackId = firstStack.id;
-        core.debug(stackId);
         const services = yield (0, getServices_1.getServices)(httpClient, {
             name: SERVICE_NAME,
             stackId,

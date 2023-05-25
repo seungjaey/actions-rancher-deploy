@@ -17,8 +17,6 @@ const handleUnhandledRejection = (reason: unknown): void => {
 process.on('unhandledRejection', handleUnhandledRejection);
 
 async function run(): Promise<void> {
-  core.debug('init');
-
   const RANCHER_URL = core.getInput('rancher_url', { required: true });
   const RANCHER_ACCESS = core.getInput('rancher_access', { required: true });
   const RANCHER_KEY = core.getInput('rancher_key', { required: true });
@@ -26,14 +24,12 @@ async function run(): Promise<void> {
   const STACK_NAME = core.getInput('stack_name', { required: true });
   const SERVICE_NAME = core.getInput('service_name', { required: true });
   const DOCKER_IMAGE = core.getInput('docker_image', { required: true });
-
   const httpClient = getHttpClient({
     rancherHost: RANCHER_URL,
     projectId: PROJECT_ID,
     username: RANCHER_ACCESS,
     password: RANCHER_KEY,
   });
-
   const stack = await getStacks(httpClient, STACK_NAME);
   if (!checkResource(stack)) {
     throw new Error(`Cannot find ${STACK_NAME}`);
@@ -43,7 +39,6 @@ async function run(): Promise<void> {
     throw new Error('Stack Not found');
   }
   const stackId = firstStack.id;
-  core.debug(stackId);
   const services = await getServices(httpClient, {
     name: SERVICE_NAME,
     stackId,
