@@ -314,25 +314,23 @@ const pollingServiceState = (i, fetchFn) => __awaiter(void 0, void 0, void 0, fu
     const state = yield fetchFn();
     return [i, state];
 });
-const WAIT_RESULTS = {
-    SUCCESS: 'SUCCESS',
-    FAILED: 'FAILED',
+const checkDeploymentSuccessful = (targetState, stateTuple) => {
+    if ((0, core_1.isUndefined)(stateTuple)) {
+        return false;
+    }
+    const finalState = (0, core_1.last)(stateTuple);
+    return finalState === targetState;
 };
 const waitUntilServiceState = (httpClient, { serviceId, targetState }) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield (0, core_1.pipe)((0, core_1.range)(Infinity), core_1.toAsync, (0, core_1.map)((i) => __awaiter(void 0, void 0, void 0, function* () { return pollingServiceState(i, () => __awaiter(void 0, void 0, void 0, function* () { return (0, getService_1.getServiceState)(httpClient, serviceId); })); })), (0, core_1.map)((tuple) => __awaiter(void 0, void 0, void 0, function* () { return (0, core_1.delay)(constants_1.POLLING_INTERVAL, tuple); })), (0, core_1.dropWhile)((tuple) => {
+    const finalState = yield (0, core_1.pipe)((0, core_1.range)(Infinity), core_1.toAsync, (0, core_1.map)((i) => __awaiter(void 0, void 0, void 0, function* () { return pollingServiceState(i, () => __awaiter(void 0, void 0, void 0, function* () { return (0, getService_1.getServiceState)(httpClient, serviceId); })); })), (0, core_1.map)((tuple) => __awaiter(void 0, void 0, void 0, function* () { return (0, core_1.delay)(constants_1.POLLING_INTERVAL, tuple); })), (0, core_1.dropWhile)((tuple) => {
         const [i, state] = tuple;
         const isMaxRetryReached = i >= constants_1.MAX_RETRY_COUNT;
         const isMatchedWithTargetState = state === targetState;
         return !(0, core_1.some)(Boolean, [isMatchedWithTargetState, isMaxRetryReached]);
     }), (0, core_1.take)(1), core_1.head);
-    if ((0, core_1.isUndefined)(result)) {
-        return WAIT_RESULTS.FAILED;
+    if (!checkDeploymentSuccessful(targetState, finalState)) {
+        throw new Error(`Service update failed`);
     }
-    const finalState = (0, core_1.last)(result);
-    if (finalState === targetState) {
-        return WAIT_RESULTS.SUCCESS;
-    }
-    return WAIT_RESULTS.FAILED;
 });
 exports.waitUntilServiceState = waitUntilServiceState;
 

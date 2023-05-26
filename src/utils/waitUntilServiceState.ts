@@ -17,18 +17,19 @@ interface Options {
   targetState: RancherServiceState;
 }
 
-type WaitResult = 'SUCCESS' | 'FAILED';
-
-const WAIT_RESULTS: Record<WaitResult, WaitResult> = {
-  SUCCESS: 'SUCCESS',
-  FAILED: 'FAILED',
-} as const;
+const checkDeploymentSuccessful = (targetState: RancherServiceState, stateTuple?: StateTuple): boolean => {
+  if (isUndefined(stateTuple)) {
+    return false;
+  }
+  const finalState = last(stateTuple);
+  return finalState === targetState;
+};
 
 export const waitUntilServiceState = async (
   httpClient: AxiosInstance,
   { serviceId, targetState }: Options,
-): Promise<WaitResult> => {
-  const result = await pipe(
+): Promise<void> => {
+  const finalState = await pipe(
     range(Infinity),
     toAsync,
     map(async (i) => pollingServiceState(i, async () => getServiceState(httpClient, serviceId))),
@@ -42,12 +43,7 @@ export const waitUntilServiceState = async (
     take(1),
     head,
   );
-  if (isUndefined(result)) {
-    return WAIT_RESULTS.FAILED;
+  if (!checkDeploymentSuccessful(targetState, finalState)) {
+    throw new Error(`Service update failed`);
   }
-  const finalState = last(result);
-  if (finalState === targetState) {
-    return WAIT_RESULTS.SUCCESS;
-  }
-  return WAIT_RESULTS.FAILED;
 };
